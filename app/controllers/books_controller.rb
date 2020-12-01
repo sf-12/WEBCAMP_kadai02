@@ -1,7 +1,9 @@
 class BooksController < ApplicationController
-
+  before_action :check_sign_in?, only: [:index, :edit, :show]
+  
   def show
     @book = Book.find(params[:id])
+    @new_book = Book.new
   end
 
   def index
@@ -22,6 +24,9 @@ class BooksController < ApplicationController
 
   def edit
     @book = Book.find(params[:id])
+    if @book.user.id != current_user.id
+      redirect_to books_path
+    end
   end
 
   def update
@@ -44,5 +49,5 @@ class BooksController < ApplicationController
   def book_params
     params.require(:book).permit(:title, :body)
   end
-
+  
 end
